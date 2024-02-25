@@ -5,21 +5,33 @@ import TabNavigationProvider from "./src/utils/navigation/TabNavigationProvider"
 
 import { View } from "react-native";
 import LoginPage from "./src/pages/Login/LoginPage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AppContainer() {
-  const [isLogin, setisLogin] = useState(true);
-  console.log("isLogin", isLogin);
-  return (
-    <View>
-      {isLogin === true ? (
-        <View>
-          <MainLayout>
-            <TabNavigationProvider />
-          </MainLayout>
-        </View>
-      ) : (
-        <LoginPage />
-      )}
-    </View>
-  );
+	const [isLogin, setisLogin] = useState(false);
+	useEffect(() => {
+		getUser();
+	}, []);
+
+	const getUser = async () => {
+		const user = await AsyncStorage.getItem("isUser");
+		console.log("user", user);
+	};
+	return (
+		<View>
+			{isLogin === true ? (
+				<View>
+					<MainLayout>
+						<TabNavigationProvider />
+					</MainLayout>
+				</View>
+			) : (
+				<MainLayout>
+					<TabNavigationProvider>
+						<LoginStack />
+					</TabNavigationProvider>
+				</MainLayout>
+			)}
+		</View>
+	);
 }
